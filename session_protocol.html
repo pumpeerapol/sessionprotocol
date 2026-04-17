@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Session Protocol</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a0a;
+  --bg2:#181818;
+  --bg3:#222222;
+  --bg4:#2c2c2c;
+  --gold:#f5c842;
+  --gold2:#ffe566;
+  --gold3:#c8981e;
+  --text:#ffffff;
+  --text2:#e0e0e0;
+  --text3:#999999;
+  --border:#3a3a3a;
+  --border2:#505050;
+  --serif:Georgia,'Times New Roman',serif;
+  --mono:'Courier New',Courier,monospace;
+}
+html{font-size:16px}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;line-height:1.65;-webkit-font-smoothing:antialiased}
+#app{max-width:640px;margin:0 auto;padding:28px 20px 80px}
+
+.hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.hdr-title{font-family:var(--serif);font-size:23px;color:var(--gold);letter-spacing:.3px;font-weight:700}
+.hdr-sub{font-size:11px;color:var(--text3);letter-spacing:3px;text-transform:uppercase;margin-top:4px;font-weight:400}
+.gear{background:var(--bg3);border:2px solid var(--border2);color:var(--text2);width:44px;height:44px;border-radius:6px;cursor:pointer;font-size:19px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.gear:hover{border-color:var(--gold);color:var(--gold)}
+
+.tabs{display:flex;gap:4px;margin-bottom:28px;background:var(--bg3);border-radius:8px;padding:4px;border:1px solid var(--border)}
+.tab{flex:1;padding:13px 6px;background:none;border:2px solid transparent;color:var(--text3);font-family:var(--mono);font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:5px;transition:all .2s;font-weight:700}
+.tab.active{background:var(--gold);color:#000000;border-color:var(--gold)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:18px}
+.card-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:700}
+
+input[type=text],input[type=number],textarea{
+  background:var(--bg3);border:2px solid var(--border2);
+  color:var(--text);font-family:var(--mono);font-size:15px;
+  border-radius:6px;padding:13px 15px;width:100%;outline:none;
+  transition:border .2s;-webkit-appearance:none;appearance:none;font-weight:500
+}
+input[type=text]:focus,input[type=number]:focus,textarea:focus{border-color:var(--gold)}
+input[type=text]::placeholder,textarea::placeholder{color:var(--text3);font-style:italic;font-weight:400}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+textarea{resize:none;line-height:1.7;min-height:82px}
+
+.feeling-input{
+  background:var(--bg3);border:2px solid var(--border2);color:var(--text);
+  font-family:var(--serif);font-style:italic;font-size:16px;
+  border-radius:6px;padding:13px 15px;width:100%;outline:none;transition:border .2s;-webkit-appearance:none
+}
+.feeling-input:focus{border-color:var(--gold)}
+.feeling-input::placeholder{color:var(--text3);font-weight:400}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  padding:15px 28px;border-radius:6px;border:2px solid transparent;
+  cursor:pointer;font-family:var(--mono);font-size:15px;
+  letter-spacing:2px;text-transform:uppercase;transition:all .2s;
+  font-weight:900;min-height:54px;-webkit-appearance:none;white-space:nowrap
+}
+.btn-primary{background:var(--gold);color:#ffffff;border-color:var(--gold);text-shadow:0 1px 4px rgba(0,0,0,0.8)}
+.btn-primary:hover{background:var(--gold2);border-color:var(--gold2);color:#ffffff}
+.btn-primary:active{background:var(--gold3);border-color:var(--gold3);color:#ffffff}
+.btn-primary:disabled{opacity:.3;cursor:not-allowed}
+.btn-secondary{background:#2a2a2a;color:#ffffff;border:2px solid #606060;font-weight:900;font-size:14px}
+.btn-secondary:hover{background:#333;border-color:#888;color:#ffffff}
+.btn-secondary:active{border-color:var(--gold);color:var(--gold)}
+.btn-end{background:#2a0808;color:#ff7070;border:2px solid #aa1a1a;font-weight:900;font-size:14px}
+.btn-end:hover{background:#3a1010;color:#ffaaaa;border-color:#cc2020}
+.btn-redirect{
+  background:transparent;color:var(--gold);border:2px solid var(--gold);
+  border-radius:6px;padding:11px 20px;font-family:var(--mono);font-size:12px;
+  letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:900;
+  transition:all .2s;display:inline-flex;align-items:center
+}
+.btn-redirect:hover{background:var(--gold);color:#000000}
+.btn-sm{padding:11px 18px;font-size:13px;min-height:46px}
+.btn-full{width:100%;display:flex}
+
+.block-list{display:flex;flex-direction:column;gap:8px}
+.block-opt{padding:16px 18px;background:var(--bg3);border:2px solid var(--border);border-radius:8px;cursor:pointer;transition:all .2s;min-height:56px;display:flex;align-items:center}
+.block-opt:hover{border-color:var(--border2)}
+.block-opt.sel{border-color:var(--gold);background:rgba(245,200,66,.07)}
+.block-opt-name{font-size:16px;color:var(--text);letter-spacing:.3px;font-weight:600}
+.block-opt.custom{border-style:dashed}
+.block-opt.custom .block-opt-name{color:var(--text3);font-weight:500}
+.block-opt.custom.sel{border-color:var(--gold)}
+
+.dur-row{padding:18px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;margin-top:6px}
+.dur-label{font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:600}
+.dur-label strong{color:var(--text);font-weight:700}
+.dur-fields{display:flex;align-items:center;gap:12px}
+.dur-fields input{width:90px;font-size:20px;text-align:center;padding:12px 10px;letter-spacing:1px;color:var(--gold)}
+.dur-fields label{font-size:14px;color:var(--text2);font-weight:600}
+
+.pledge-prompt{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:14px;font-family:var(--mono);font-weight:700}
+.pledge-text{
+  font-family:var(--serif);font-style:italic;font-size:17px;color:var(--text);
+  line-height:2;padding:20px 20px 20px 22px;border-left:3px solid var(--gold);
+  background:var(--bg3);border-radius:0 6px 6px 0;margin-bottom:22px;white-space:pre-line
+}
+
+.feeling-signal{display:none;margin-top:14px;padding:14px 16px;border-radius:6px;border-left:3px solid var(--gold);background:#1e1a0a}
+.feeling-signal.calm{border-color:#4a9a4a;background:#0f1a0f}
+.feeling-signal-text{font-size:14px;color:var(--text2);line-height:1.7;font-family:var(--serif);font-style:italic;margin-bottom:0}
+
+.running-block{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--text3);text-align:center;margin-bottom:6px;font-weight:700}
+.running-intent{font-family:var(--serif);font-style:italic;font-size:16px;color:var(--text2);text-align:center;margin-bottom:30px;padding:0 12px;line-height:1.8}
+.timer{font-family:var(--serif);font-size:76px;color:var(--gold);text-align:center;padding:16px 0 28px;letter-spacing:4px;font-weight:700;line-height:1}
+.timer.warn{color:#ff9933}
+.timer-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+.done-line{font-family:var(--serif);font-style:italic;font-size:18px;color:var(--gold);text-align:center;padding:8px 0 20px;line-height:1.9}
+.done-pledge{font-size:13px;color:var(--text2);line-height:1.9;margin:0 0 24px;font-family:var(--mono);text-align:center;padding:0 8px;font-weight:600}
+.close-word-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:700}
+.close-word-input{
+  background:var(--bg3);border:2px solid var(--border2);color:var(--text);
+  font-family:var(--serif);font-style:italic;font-size:17px;border-radius:6px;
+  padding:14px 16px;width:100%;outline:none;margin-bottom:18px;-webkit-appearance:none;transition:border .2s
+}
+.close-word-input:focus{border-color:var(--gold)}
+.close-word-input::placeholder{color:var(--text3)}
+
+.dots{display:flex;gap:10px;justify-content:center;margin-bottom:24px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--bg4);border:2px solid var(--border2);transition:all .3s}
+.dot.active{background:var(--gold);border-color:var(--gold)}
+.dot.done{background:var(--gold3);border-color:var(--gold3)}
+
+.fstep{display:none}.fstep.active{display:block}
+.step-no{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:10px;font-weight:700}
+.step-q{font-size:18px;color:var(--text);margin-bottom:20px;line-height:1.7;font-family:var(--serif);font-style:italic}
+.ftimer{font-family:var(--serif);font-size:52px;color:var(--gold);text-align:center;padding:14px 0 8px;letter-spacing:2px;font-weight:700}
+.ftimer-row{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:6px;margin-top:18px}
+.ftimer-row label{font-size:13px;color:var(--text2);font-weight:600}
+.ftimer-row input{width:72px;font-size:17px;text-align:center;padding:10px 8px;color:var(--gold)}
+.fbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+
+.freeze-done-msg{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--gold);text-align:center;padding:24px 12px 8px;line-height:2.1}
+.freeze-done-sub{font-size:14px;color:var(--text2);text-align:center;line-height:1.8;padding:0 8px;margin-bottom:28px;font-family:var(--mono)}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:20px}
+.overlay.open{display:flex;align-items:flex-start;justify-content:center}
+.settings{background:var(--bg2);border:1px solid var(--border2);border-radius:12px;width:100%;max-width:600px;padding:28px;margin:auto}
+.s-title{font-family:var(--serif);font-size:20px;color:var(--gold);margin-bottom:26px;display:flex;justify-content:space-between;align-items:center;font-weight:700}
+.s-section{margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border)}
+.s-section:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.s-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text3);margin-bottom:14px;font-weight:700}
+.s-row{display:flex;gap:8px;margin-bottom:10px;align-items:center}
+.s-row input[type=text]{flex:1}
+.s-del{background:#2a0808;color:#ff7070;border:2px solid #aa1a1a;border-radius:4px;padding:9px 14px;font-family:var(--mono);font-size:12px;cursor:pointer;min-height:44px;font-weight:700;transition:all .2s}
+.s-del:hover{background:#3a1010;color:#ffaaaa}
+
+@media(max-width:500px){
+  #app{padding:18px 14px 80px}
+  .hdr-title{font-size:20px}
+  .timer{font-size:60px;letter-spacing:2px}
+  .pledge-text{font-size:15px;padding:16px 16px 16px 18px}
+  .timer-btns{flex-direction:column;align-items:stretch}
+  .timer-btns .btn{width:100%}
+  .fbtns{flex-direction:column;align-items:stretch}
+  .fbtns .btn{width:100%}
+  .card{padding:18px}
+  .ftimer{font-size:44px}
+  .freeze-done-msg{font-size:17px}
+  .step-q{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="hdr">
+    <div>
+      <div class="hdr-title">Session Protocol</div>
+      <div class="hdr-sub">Personal Command Layer</div>
+    </div>
+    <button class="gear" onclick="openSettings()">⚙</button>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('activator')">Activator</button>
+    <button class="tab" onclick="switchTab('freeze')">Freeze Breaker</button>
+  </div>
+
+  <!-- ACTIVATOR -->
+  <div class="tab-content active" id="tab-activator">
+
+    <div id="setup-view">
+      <div class="card">
+        <div class="card-label">Select work block</div>
+        <div class="block-list" id="block-list"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">How am I actually feeling right now?</div>
+        <input class="feeling-input" type="text" id="feeling-input" placeholder="One honest line. Don't filter it." oninput="checkFeeling()">
+        <div class="feeling-signal" id="feeling-signal">
+          <div class="feeling-signal-text" id="feeling-signal-text"></div>
+          <div style="margin-top:12px" id="feeling-redirect-wrap"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">In this session I will specifically…</div>
+        <textarea id="intent-input" placeholder="Name the one thing this session is for." rows="3"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="pledge-prompt">Read this aloud before beginning</div>
+        <div class="pledge-text" id="pledge-display"></div>
+        <button class="btn btn-primary btn-full" onclick="startSession()">Begin Session</button>
+      </div>
+    </div>
+
+    <div id="running-view" style="display:none">
+      <div class="card" style="text-align:center">
+        <div class="running-block" id="running-name"></div>
+        <div class="timer" id="main-timer">00:00</div>
+        <div class="running-intent" id="running-intent"></div>
+        <div class="timer-btns">
+          <button class="btn btn-secondary" id="pause-btn" onclick="togglePause()">Pause</button>
+          <button class="btn btn-end" onclick="endSession()">End Session</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="complete-view" style="display:none">
+      <div class="card">
+        <div class="done-line" id="done-line"></div>
+        <div class="close-word-label">How did the session go? One word or phrase.</div>
+        <input class="close-word-input" type="text" id="close-word" placeholder="e.g. focused, hard-won, scattered but present">
+        <div class="done-pledge" id="done-pledge"></div>
+        <button class="btn btn-primary btn-full" onclick="closeSession()">Close Session</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FREEZE BREAKER -->
+  <div class="tab-content" id="tab-freeze">
+    <div class="dots">
+      <div class="dot active" id="dot-0"></div>
+      <div class="dot" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+    </div>
+
+    <div class="fstep active" id="fstep-0">
+      <div class="card">
+        <div class="step-no">Step 1 of 3 — Name it</div>
+        <div class="step-q">What is the heaviest thing sitting on you right now?</div>
+        <textarea id="fi-0" placeholder="One sentence. Don't filter it." rows="3"></textarea>
+        <div class="ftimer-row">
+          <label>Timer</label>
+          <input type="number" id="fd-0" min="1" max="60" value="2">
+          <label>min</label>
+        </div>
+        <div class="ftimer" id="ft-0">2:00</div>
+        <div class="fbtns">
+          <button class="btn btn-secondary btn-sm" onclick="startFT(0)">Start Timer</button>
+          <button class="btn btn-primary btn-sm" id="fnext-0" onclick="nextStep(0)" disabled>Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fstep" id="fstep-1">
+      <div class="card">
+        <div class="step-no">Step 2 of 3 — Shrink it</div>
+        <div class="step-q">What is the one tiny task you can do right now? Make it stupid small.</div>
+        <textarea id="fi-1" placeholder="e.g. Open my backtesting sheet and write today's date." rows="3"></textarea>
+        <div class="ftimer-row">
+          <label>Timer</label>
+          <input type="number" id="fd-1" min="1" max="60" value="2">
+          <label>min</label>
+        </div>
+        <div class="ftimer" id="ft-1">2:00</div>
+        <div class="fbtns">
+          <button class="btn btn-secondary btn-sm" onclick="startFT(1)">Start Timer</button>
+          <button class="btn btn-primary btn-sm" id="fnext-1" onclick="nextStep(1)" disabled>Next →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fstep" id="fstep-2">
+      <div class="card">
+        <div class="step-no">Step 3 of 3 — Declare and begin</div>
+        <div class="step-q">Write it as a declaration. Then do it.</div>
+        <textarea id="fi-2" placeholder="e.g. I will now open my backtesting sheet and write today's date. Nothing else." rows="3"></textarea>
+        <div class="ftimer-row">
+          <label>Timer</label>
+          <input type="number" id="fd-2" min="1" max="60" value="1">
+          <label>min</label>
+        </div>
+        <div class="ftimer" id="ft-2">1:00</div>
+        <div class="fbtns">
+          <button class="btn btn-secondary btn-sm" onclick="startFT(2)">Start Timer</button>
+          <button class="btn btn-primary btn-sm" id="fnext-2" onclick="completeFreezeCircuit()" disabled>Begin →</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fstep" id="fstep-done">
+      <div class="card" style="text-align:center">
+        <div class="freeze-done-msg">You named it.<br>You shrunk it.<br>You declared it.</div>
+        <div class="freeze-done-sub">The heaviness is still there.<br>But now you have one small move.<br>That's enough to begin.</div>
+        <button class="btn btn-primary btn-full" onclick="freezeToActivator()" style="margin-bottom:12px">Start a Session →</button>
+        <button class="btn btn-secondary btn-full" onclick="resetFreeze()">Reset Freeze Breaker</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Settings -->
+<div class="overlay" id="settings-overlay">
+  <div class="settings">
+    <div class="s-title">
+      <span>Settings</span>
+      <button class="btn btn-secondary btn-sm" onclick="closeSettings()">Close</button>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Pledge text</div>
+      <textarea id="s-pledge" rows="7" style="font-family:var(--serif);font-style:italic;font-size:15px;line-height:1.9;color:var(--text2)"></textarea>
+    </div>
+    <div class="s-section">
+      <div class="s-label">Session block names</div>
+      <div id="s-blocks"></div>
+      <div class="s-row" style="margin-top:14px">
+        <input type="text" id="new-block" placeholder="Add a block name">
+        <button class="btn btn-secondary btn-sm" onclick="addBlock()">Add</button>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-full" onclick="saveSettings()">Save Settings</button>
+  </div>
+</div>
+
+<script>
+var PLEDGE = "I pledge myself to clarity, discipline, and determination.\nI pursue this path for a life of liberty — defined by principle, not pressure.\nI take full responsibility for my outcomes — none to impress, and none to blame.\nEach day, I show up prepared, focused, and accountable — for this is who I am.\nEach action reflects my preparation, patience, and principles.\nI walk this path not for ease, but for strength, character, and integrity.";
+
+var PLEDGE_SHORT = "None to impress. None to blame.\nWalk with strength, character, and integrity.";
+
+var BLOCKS_DEFAULT = ["Backtesting","London Prep","NY Prep"];
+
+var DONE_LINE = "You showed up. That is never nothing.";
+
+var HIGH_DISTRESS = ["overwhelm","overwhelmed","frozen","stuck","anxious","anxiety","panic","exhausted","dread","heavy","numb","depressed","shutdown","spiral","hopeless","paralyz","scared","afraid","lost","terrible","awful","horrible","broken","breaking","can't","cannot","empty"];
+
+var S = (function(){
+  try{ var r = localStorage.getItem('sp_v6'); if(r) return JSON.parse(r); }catch(e){}
+  return { pledge: PLEDGE, blocks: BLOCKS_DEFAULT.slice() };
+})();
+
+var selIdx = null;
+var selCustom = false;
+var durVal = '';
+var customName = '';
+var mainIval = null;
+var mainRem = 0;
+var mainPaused = false;
+var fIvals = [null,null,null];
+var fRem = [120,120,60];
+
+function fmt(s){
+  if(s<=0) return '00:00';
+  var m=Math.floor(s/60), sec=s%60;
+  return (m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+}
+function esc(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function persist(){
+  try{ localStorage.setItem('sp_v6', JSON.stringify(S)); }catch(e){}
+}
+
+function switchTab(name){
+  var names=['activator','freeze'];
+  var tabs=document.querySelectorAll('.tab');
+  var contents=document.querySelectorAll('.tab-content');
+  for(var i=0;i<tabs.length;i++){
+    tabs[i].classList.toggle('active', names[i]===name);
+    contents[i].classList.toggle('active', names[i]===name);
+  }
+}
+
+function renderBlocks(){
+  var el=document.getElementById('block-list');
+  el.innerHTML='';
+  for(var i=0;i<S.blocks.length;i++){
+    (function(idx){
+      var d=document.createElement('div');
+      d.className='block-opt'+(selIdx===idx&&!selCustom?' sel':'');
+      d.innerHTML='<div class="block-opt-name">'+esc(S.blocks[idx])+'</div>';
+      d.onclick=function(){ selIdx=idx; selCustom=false; durVal=''; renderBlocks(); };
+      el.appendChild(d);
+    })(i);
+  }
+  var c=document.createElement('div');
+  c.className='block-opt custom'+(selCustom?' sel':'');
+  c.innerHTML='<div class="block-opt-name">Custom block</div>';
+  c.onclick=function(){ selIdx=null; selCustom=true; durVal=''; renderBlocks(); };
+  el.appendChild(c);
+
+  if(selIdx!==null||selCustom){
+    var row=document.createElement('div');
+    row.className='dur-row';
+    if(selCustom){
+      row.innerHTML=
+        '<div class="dur-label">Name &amp; duration</div>'+
+        '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'+
+          '<input type="text" id="cname-input" placeholder="Block name…" style="flex:1;min-width:130px" value="'+esc(customName)+'">'+
+          '<div class="dur-fields"><input type="number" id="dur-input" min="1" max="480" placeholder="—" value="'+esc(durVal)+'"><label>min</label></div>'+
+        '</div>';
+    } else {
+      row.innerHTML=
+        '<div class="dur-label">Duration for <strong>'+esc(S.blocks[selIdx])+'</strong></div>'+
+        '<div class="dur-fields"><input type="number" id="dur-input" min="1" max="480" placeholder="—" value="'+esc(durVal)+'"><label>min</label></div>';
+    }
+    el.appendChild(row);
+    var di=document.getElementById('dur-input');
+    if(di) di.oninput=function(){ durVal=this.value; };
+    var ci=document.getElementById('cname-input');
+    if(ci) ci.oninput=function(){ customName=this.value; };
+  }
+  document.getElementById('pledge-display').textContent=S.pledge;
+}
+
+function checkFeeling(){
+  var val=document.getElementById('feeling-input').value.trim().toLowerCase();
+  var sig=document.getElementById('feeling-signal');
+  var txt=document.getElementById('feeling-signal-text');
+  var wrap=document.getElementById('feeling-redirect-wrap');
+  if(!val){ sig.style.display='none'; return; }
+  var heavy=HIGH_DISTRESS.some(function(w){ return val.indexOf(w)>-1; });
+  sig.style.display='block';
+  if(heavy){
+    sig.className='feeling-signal';
+    txt.textContent='That sounds heavy. Before starting a session, the Freeze Breaker might be the better first step — it will help you name this and shrink it before you try to work.';
+    wrap.innerHTML='<button class="btn-redirect" onclick="switchTab(\'freeze\')">Go to Freeze Breaker →</button>';
+  } else {
+    sig.className='feeling-signal calm';
+    txt.textContent='Good. Hold that awareness as you move into your session.';
+    wrap.innerHTML='';
+  }
+}
+
+function startSession(){
+  if(selIdx===null&&!selCustom){ alert('Select a work block.'); return; }
+  var dur=parseInt(durVal,10);
+  if(!dur||dur<1){ alert('Enter a duration in minutes.'); return; }
+  if(selCustom&&!customName.trim()){ alert('Name your custom block.'); return; }
+  var intent=document.getElementById('intent-input').value.trim();
+  if(!intent){ alert('Write your session intent first.'); return; }
+  var bname=selCustom?customName.trim():S.blocks[selIdx];
+  mainRem=dur*60; mainPaused=false;
+  document.getElementById('setup-view').style.display='none';
+  document.getElementById('running-view').style.display='block';
+  document.getElementById('complete-view').style.display='none';
+  document.getElementById('running-name').textContent=bname.toUpperCase();
+  document.getElementById('running-intent').textContent=intent;
+  document.getElementById('pause-btn').textContent='Pause';
+  document.getElementById('main-timer').className='timer';
+  clearInterval(mainIval);
+  tickMain();
+  mainIval=setInterval(tickMain,1000);
+}
+
+function tickMain(){
+  var el=document.getElementById('main-timer');
+  if(!el){ clearInterval(mainIval); return; }
+  if(mainRem<=0){ clearInterval(mainIval); showComplete(); return; }
+  el.textContent=fmt(mainRem);
+  el.className='timer'+(mainRem<=60?' warn':'');
+  if(!mainPaused) mainRem--;
+}
+
+function togglePause(){
+  mainPaused=!mainPaused;
+  document.getElementById('pause-btn').textContent=mainPaused?'Resume':'Pause';
+}
+
+function endSession(){
+  if(!confirm('End this session early?')) return;
+  clearInterval(mainIval);
+  showComplete();
+}
+
+function showComplete(){
+  clearInterval(mainIval);
+  document.getElementById('running-view').style.display='none';
+  document.getElementById('complete-view').style.display='block';
+  document.getElementById('done-line').textContent=DONE_LINE;
+  document.getElementById('done-pledge').textContent=PLEDGE_SHORT;
+  document.getElementById('close-word').value='';
+}
+
+function closeSession(){
+  document.getElementById('complete-view').style.display='none';
+  document.getElementById('setup-view').style.display='block';
+  document.getElementById('main-timer').textContent='00:00';
+  document.getElementById('main-timer').className='timer';
+  document.getElementById('intent-input').value='';
+  document.getElementById('feeling-input').value='';
+  document.getElementById('feeling-signal').style.display='none';
+  durVal=''; selIdx=null; selCustom=false;
+  renderBlocks();
+}
+
+function startFT(step){
+  var durEl=document.getElementById('fd-'+step);
+  var mins=parseInt(durEl?durEl.value:(step<2?2:1),10);
+  if(!mins||mins<1) mins=1;
+  if(fIvals[step]) clearInterval(fIvals[step]);
+  fRem[step]=mins*60;
+  document.getElementById('ft-'+step).textContent=fmt(fRem[step]);
+  fIvals[step]=setInterval(function(){
+    if(fRem[step]>0) fRem[step]--;
+    var el=document.getElementById('ft-'+step);
+    if(el) el.textContent=fmt(fRem[step]);
+    if(fRem[step]<=0) clearInterval(fIvals[step]);
+  },1000);
+}
+
+function initFreezeListeners(){
+  for(var i=0;i<3;i++){
+    (function(idx){
+      var ta=document.getElementById('fi-'+idx);
+      var btn=document.getElementById('fnext-'+idx);
+      if(ta&&btn){
+        ta.addEventListener('input',function(){
+          btn.disabled=this.value.trim().length===0;
+        });
+      }
+    })(i);
+  }
+}
+
+function nextStep(step){
+  var ta=document.getElementById('fi-'+step);
+  if(!ta||!ta.value.trim()){ alert('Write something first — even one word.'); return; }
+  if(fIvals[step]){ clearInterval(fIvals[step]); fIvals[step]=null; }
+  document.getElementById('fstep-'+step).classList.remove('active');
+  document.getElementById('dot-'+step).className='dot done';
+  var next=step+1;
+  document.getElementById('fstep-'+next).classList.add('active');
+  if(next<3) document.getElementById('dot-'+next).className='dot active';
+}
+
+function completeFreezeCircuit(){
+  var ta=document.getElementById('fi-2');
+  if(!ta||!ta.value.trim()){ alert('Write your declaration first.'); return; }
+  if(fIvals[2]){ clearInterval(fIvals[2]); fIvals[2]=null; }
+  document.getElementById('fstep-2').classList.remove('active');
+  document.getElementById('dot-2').className='dot done';
+  document.getElementById('fstep-done').classList.add('active');
+}
+
+function freezeToActivator(){
+  resetFreeze();
+  switchTab('activator');
+  document.getElementById('setup-view').style.display='block';
+  document.getElementById('running-view').style.display='none';
+  document.getElementById('complete-view').style.display='none';
+}
+
+function resetFreeze(){
+  var defs=['2:00','2:00','1:00'];
+  var defMins=[2,2,1];
+  for(var i=0;i<3;i++){
+    if(fIvals[i]){ clearInterval(fIvals[i]); fIvals[i]=null; }
+    fRem[i]=defMins[i]*60;
+    document.getElementById('fstep-'+i).classList.remove('active');
+    document.getElementById('dot-'+i).className='dot';
+    document.getElementById('ft-'+i).textContent=defs[i];
+    document.getElementById('fi-'+i).value='';
+    document.getElementById('fd-'+i).value=defMins[i];
+    document.getElementById('fnext-'+i).disabled=true;
+  }
+  document.getElementById('fstep-done').classList.remove('active');
+  document.getElementById('fstep-0').classList.add('active');
+  document.getElementById('dot-0').className='dot active';
+}
+
+function openSettings(){
+  document.getElementById('s-pledge').value=S.pledge;
+  renderSBlocks();
+  document.getElementById('settings-overlay').classList.add('open');
+}
+function closeSettings(){
+  document.getElementById('settings-overlay').classList.remove('open');
+}
+function renderSBlocks(){
+  var el=document.getElementById('s-blocks');
+  el.innerHTML='';
+  for(var i=0;i<S.blocks.length;i++){
+    (function(idx){
+      var row=document.createElement('div');
+      row.className='s-row';
+      row.innerHTML='<input type="text" id="sb-'+idx+'" value="'+esc(S.blocks[idx])+'" style="flex:1">'+
+        '<button class="s-del" onclick="delBlock('+idx+')">✕</button>';
+      el.appendChild(row);
+    })(i);
+  }
+}
+function delBlock(i){
+  S.blocks.splice(i,1);
+  if(selIdx===i) selIdx=null;
+  renderSBlocks();
+}
+function addBlock(){
+  var n=document.getElementById('new-block').value.trim();
+  if(!n) return;
+  S.blocks.push(n);
+  document.getElementById('new-block').value='';
+  renderSBlocks();
+}
+function saveSettings(){
+  var p=document.getElementById('s-pledge').value.trim();
+  if(p) S.pledge=p;
+  for(var i=0;i<S.blocks.length;i++){
+    var e=document.getElementById('sb-'+i);
+    if(e&&e.value.trim()) S.blocks[i]=e.value.trim();
+  }
+  persist();
+  closeSettings();
+  renderBlocks();
+}
+
+renderBlocks();
+initFreezeListeners();
+</script>
+</body>
+</html>
