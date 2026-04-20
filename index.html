@@ -161,6 +161,19 @@ textarea{resize:none;line-height:1.7;min-height:82px}
 .s-del{background:#2a0808;color:#ff7070;border:2px solid #aa1a1a;border-radius:4px;padding:9px 14px;font-family:var(--mono);font-size:12px;cursor:pointer;min-height:44px;font-weight:700;transition:all .2s}
 .s-del:hover{background:#3a1010;color:#ffaaaa}
 
+.resume-banner{background:#1a1a0a;border:2px solid var(--gold);border-radius:10px;padding:20px 24px;margin-bottom:18px}
+.resume-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:700}
+.resume-detail{font-family:var(--serif);font-style:italic;font-size:15px;color:var(--text2);margin-bottom:16px;line-height:1.7}
+.resume-btns{display:flex;gap:10px;flex-wrap:wrap}
+.hist-tabs{display:flex;gap:6px;margin-bottom:14px}
+.hist-tab{flex:1;padding:9px 6px;background:var(--bg4);border:1px solid var(--border);border-radius:5px;color:var(--text3);font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;font-weight:700;transition:all .2s}
+.hist-tab.active{background:var(--bg3);border-color:var(--gold);color:var(--gold)}
+.hist-entry{padding:14px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:8px}
+.hist-meta{font-size:11px;letter-spacing:1px;color:var(--text3);margin-bottom:6px;font-weight:700;text-transform:uppercase}
+.hist-intent{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--text2);margin-bottom:4px;line-height:1.6}
+.hist-close{font-size:13px;color:var(--gold);font-weight:700;margin-top:4px}
+.hist-empty{font-size:14px;color:var(--text3);font-style:italic;padding:8px 0;font-family:var(--serif)}
+.hist-sub{font-size:12px;color:var(--text3);margin-bottom:2px;font-family:var(--mono)}
 @media(max-width:500px){
   #app{padding:18px 14px 80px}
   .hdr-title{font-size:20px}
@@ -196,6 +209,14 @@ textarea{resize:none;line-height:1.7;min-height:82px}
   <div class="tab-content active" id="tab-activator">
 
     <div id="setup-view">
+      <div id="resume-banner" style="display:none" class="resume-banner">
+        <div class="resume-title">Resume interrupted session?</div>
+        <div class="resume-detail" id="resume-detail"></div>
+        <div class="resume-btns">
+          <button class="btn btn-primary btn-sm" onclick="resumeSession()">Resume</button>
+          <button class="btn btn-secondary btn-sm" onclick="dismissResume()">Discard</button>
+        </div>
+      </div>
       <div class="card">
         <div class="card-label">Select work block</div>
         <div class="block-list" id="block-list"></div>
@@ -338,6 +359,15 @@ textarea{resize:none;line-height:1.7;min-height:82px}
         <button class="btn btn-secondary btn-sm" onclick="addBlock()">Add</button>
       </div>
     </div>
+    <div class="s-section">
+      <div class="s-label">History</div>
+      <div class="hist-tabs">
+        <button class="hist-tab active" id="htab-sessions" onclick="switchHistTab('sessions')">Sessions</button>
+        <button class="hist-tab" id="htab-freeze" onclick="switchHistTab('freeze')">Freeze Breaker</button>
+      </div>
+      <div id="s-history" style="max-height:320px;overflow-y:auto"></div>
+      <button class="btn btn-secondary btn-sm" onclick="clearHistory()" style="margin-top:14px;width:100%">Clear All History</button>
+    </div>
     <button class="btn btn-primary btn-full" onclick="saveSettings()">Save Settings</button>
   </div>
 </div>
@@ -354,8 +384,17 @@ var DONE_LINE = "You showed up. That is never nothing.";
 var HIGH_DISTRESS = ["overwhelm","overwhelmed","frozen","stuck","anxious","anxiety","panic","exhausted","dread","heavy","numb","depressed","shutdown","spiral","hopeless","paralyz","scared","afraid","lost","terrible","awful","horrible","broken","breaking","can't","cannot","empty"];
 
 var S = (function(){
-  try{ var r = localStorage.getItem('sp_v6'); if(r) return JSON.parse(r); }catch(e){}
-  return { pledge: PLEDGE, blocks: BLOCKS_DEFAULT.slice() };
+  try{
+    var r = localStorage.getItem('sp_v6');
+    if(r){
+      var d = JSON.parse(r);
+      if(!d.sessionHistory) d.sessionHistory = [];
+      if(!d.freezeHistory) d.freezeHistory = [];
+      if(!d.hasOwnProperty('activeSession')) d.activeSession = null;
+      return d;
+    }
+  }catch(e){}
+  return { pledge: PLEDGE, blocks: BLOCKS_DEFAULT.slice(), sessionHistory: [], freezeHistory: [], activeSession: null };
 })();
 
 var selIdx = null;
@@ -365,6 +404,10 @@ var customName = '';
 var mainIval = null;
 var mainRem = 0;
 var mainPaused = false;
+var mainElapsed = 0;
+var mainDurSecs = 0;
+var currentSession = null;
+var histTab = 'sessions';
 var fIvals = [null,null,null];
 var fRem = [120,120,60];
 
@@ -459,7 +502,11 @@ function startSession(){
   var intent=document.getElementById('intent-input').value.trim();
   if(!intent){ alert('Write your session intent first.'); return; }
   var bname=selCustom?customName.trim():S.blocks[selIdx];
-  mainRem=dur*60; mainPaused=false;
+  mainRem=dur*60; mainElapsed=0; mainDurSecs=dur*60; mainPaused=false;
+  currentSession={block:bname,durPlanned:dur,intent:intent,feeling:document.getElementById('feeling-input').value.trim(),ts:Date.now()};
+  S.activeSession={block:bname,durPlanned:dur,elapsed:0,intent:intent,feeling:currentSession.feeling,ts:currentSession.ts};
+  persist();
+  document.getElementById('resume-banner').style.display='none';
   document.getElementById('setup-view').style.display='none';
   document.getElementById('running-view').style.display='block';
   document.getElementById('complete-view').style.display='none';
@@ -478,7 +525,7 @@ function tickMain(){
   if(mainRem<=0){ clearInterval(mainIval); showComplete(); return; }
   el.textContent=fmt(mainRem);
   el.className='timer'+(mainRem<=60?' warn':'');
-  if(!mainPaused) mainRem--;
+  if(!mainPaused){ mainRem--; mainElapsed++; if(mainElapsed%15===0) saveActiveSession(); }
 }
 
 function togglePause(){
@@ -502,6 +549,14 @@ function showComplete(){
 }
 
 function closeSession(){
+  if(currentSession){
+    var entry={ts:currentSession.ts,date:new Date(currentSession.ts).toLocaleDateString(),block:currentSession.block,durPlanned:currentSession.durPlanned,durActual:mainElapsed,intent:currentSession.intent,feeling:currentSession.feeling,closeWord:document.getElementById('close-word').value.trim()};
+    S.sessionHistory.unshift(entry);
+    if(S.sessionHistory.length>100) S.sessionHistory.length=100;
+    currentSession=null;
+  }
+  S.activeSession=null;
+  persist();
   document.getElementById('complete-view').style.display='none';
   document.getElementById('setup-view').style.display='block';
   document.getElementById('main-timer').textContent='00:00';
@@ -557,6 +612,10 @@ function completeFreezeCircuit(){
   var ta=document.getElementById('fi-2');
   if(!ta||!ta.value.trim()){ alert('Write your declaration first.'); return; }
   if(fIvals[2]){ clearInterval(fIvals[2]); fIvals[2]=null; }
+  var fentry={ts:Date.now(),date:new Date().toLocaleDateString(),step0:document.getElementById('fi-0').value.trim(),step1:document.getElementById('fi-1').value.trim(),step2:document.getElementById('fi-2').value.trim()};
+  S.freezeHistory.unshift(fentry);
+  if(S.freezeHistory.length>50) S.freezeHistory.length=50;
+  persist();
   document.getElementById('fstep-2').classList.remove('active');
   document.getElementById('dot-2').className='dot done';
   document.getElementById('fstep-done').classList.add('active');
@@ -591,6 +650,7 @@ function resetFreeze(){
 function openSettings(){
   document.getElementById('s-pledge').value=S.pledge;
   renderSBlocks();
+  renderHistory();
   document.getElementById('settings-overlay').classList.add('open');
 }
 function closeSettings(){
@@ -633,8 +693,85 @@ function saveSettings(){
   renderBlocks();
 }
 
+function saveActiveSession(){
+  if(S.activeSession){ S.activeSession.elapsed=mainElapsed; persist(); }
+}
+function clearActiveSession(){
+  S.activeSession=null; persist();
+}
+function checkResume(){
+  var a=S.activeSession;
+  if(!a) return;
+  var rem=a.durPlanned*60-a.elapsed;
+  if(rem<=0){ clearActiveSession(); return; }
+  currentSession={block:a.block,durPlanned:a.durPlanned,intent:a.intent,feeling:a.feeling||'',ts:a.ts};
+  var d=document.getElementById('resume-detail');
+  d.textContent=a.block+' — '+fmt(rem)+' remaining\n'+a.intent;
+  document.getElementById('resume-banner').style.display='block';
+}
+function resumeSession(){
+  var a=S.activeSession;
+  if(!a) return;
+  var rem=a.durPlanned*60-a.elapsed;
+  if(rem<=0){ dismissResume(); return; }
+  mainRem=rem; mainElapsed=a.elapsed; mainDurSecs=a.durPlanned*60; mainPaused=false;
+  document.getElementById('resume-banner').style.display='none';
+  document.getElementById('setup-view').style.display='none';
+  document.getElementById('running-view').style.display='block';
+  document.getElementById('running-name').textContent=a.block.toUpperCase();
+  document.getElementById('running-intent').textContent=a.intent;
+  document.getElementById('pause-btn').textContent='Pause';
+  document.getElementById('main-timer').className='timer';
+  clearInterval(mainIval);
+  tickMain();
+  mainIval=setInterval(tickMain,1000);
+}
+function dismissResume(){
+  currentSession=null;
+  clearActiveSession();
+  document.getElementById('resume-banner').style.display='none';
+}
+function switchHistTab(tab){
+  histTab=tab;
+  document.getElementById('htab-sessions').classList.toggle('active',tab==='sessions');
+  document.getElementById('htab-freeze').classList.toggle('active',tab==='freeze');
+  renderHistory();
+}
+function renderHistory(){
+  var el=document.getElementById('s-history');
+  el.innerHTML='';
+  if(histTab==='sessions'){
+    if(!S.sessionHistory.length){ el.innerHTML='<div class="hist-empty">No sessions recorded yet.</div>'; return; }
+    S.sessionHistory.forEach(function(e){
+      var d=document.createElement('div');
+      d.className='hist-entry';
+      var dur=e.durActual?fmt(e.durActual)+' actual / '+e.durPlanned+'min planned':e.durPlanned+'min planned';
+      d.innerHTML='<div class="hist-meta">'+esc(e.date)+' &middot; '+esc(e.block)+' &middot; '+esc(dur)+'</div>'+
+        '<div class="hist-intent">'+esc(e.intent)+'</div>'+
+        (e.closeWord?'<div class="hist-close">'+esc(e.closeWord)+'</div>':'');
+      el.appendChild(d);
+    });
+  } else {
+    if(!S.freezeHistory.length){ el.innerHTML='<div class="hist-empty">No freeze breaker sessions yet.</div>'; return; }
+    S.freezeHistory.forEach(function(e){
+      var d=document.createElement('div');
+      d.className='hist-entry';
+      d.innerHTML='<div class="hist-meta">'+esc(e.date)+'</div>'+
+        '<div class="hist-sub">Heaviest thing</div><div class="hist-intent">'+esc(e.step0)+'</div>'+
+        '<div class="hist-sub">Tiny task</div><div class="hist-intent">'+esc(e.step1)+'</div>'+
+        '<div class="hist-sub">Declaration</div><div class="hist-intent">'+esc(e.step2)+'</div>';
+      el.appendChild(d);
+    });
+  }
+}
+function clearHistory(){
+  if(!confirm('Clear all history? This cannot be undone.')) return;
+  S.sessionHistory=[]; S.freezeHistory=[]; persist(); renderHistory();
+}
+
 renderBlocks();
 initFreezeListeners();
+checkResume();
 </script>
 </body>
 </html>
