@@ -193,19 +193,76 @@ textarea{resize:none;line-height:1.7;min-height:82px}
 :focus-visible{outline:3px solid var(--gold);outline-offset:4px}
 .block-opt{width:100%;text-align:left;font-family:inherit;color:inherit}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.suite-nav{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.suite-nav a{font:500 12px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-decoration:none;color:#a9b2af;padding:9px 13px;border-radius:7px;transition:background .2s}
+.suite-nav a:hover{background:#222b2a;color:#f0eee5}
+.suite-nav a[aria-current=page]{background:#29312d;color:#e8c986}
+.eyebrow{font:600 10px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:2.3px;text-transform:uppercase;color:#cbb985}
+.page-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:36px 0 30px}
+.page-hero h1{font:400 clamp(32px,4vw,52px)/1.1 Georgia,serif;color:#f4f1e8;letter-spacing:-1.5px;margin:10px 0 12px}
+.page-hero p{font:400 14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#a5afaa;max-width:490px}
+.local-tag{font:500 11px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#a5afaa;white-space:nowrap;padding:8px 12px;border:1px solid #34413c;border-radius:30px}
+.local-tag:before{content:"";display:inline-block;width:5px;height:5px;background:#8fad9b;border-radius:50%;margin:0 7px 1px 0}
+@media(max-width:600px){.page-hero{display:block;padding:28px 0}.local-tag{display:inline-block;margin-top:16px}.suite-nav a{padding:8px 10px}}
+
+:root{--bg:#101816;--bg2:#18211e;--bg3:#1d2823;--bg4:#29372e;--gold:#e1c48a;--gold2:#edd6a6;--gold3:#bea06b;--text:#eeeede;--text2:#c5ccc3;--text3:#9ea99f;--border:#303d34;--border2:#465448;--mono:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:radial-gradient(ellipse at 80% 0%,#25312866,transparent 50%),var(--bg);font-size:15px}
+#app{max-width:1120px;padding:26px 36px 60px}
+.hdr{gap:24px;margin:0;padding:0 0 24px;border-color:var(--border)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none;font-size:15px;font-weight:600;white-space:nowrap}
+.brand-mark{display:grid;place-items:center;width:34px;height:38px;background:var(--gold);color:#172218;font:italic 28px Georgia;border-radius:9px 2px 9px 2px}
+.brand small{display:block;font-size:10px;font-weight:400;color:var(--text3);margin-top:3px}
+.header-actions{display:flex;align-items:center;gap:16px;margin-left:auto}
+.history-link{color:var(--text2);background:none;border:0;font:500 12px var(--mono);cursor:pointer;white-space:nowrap}
+.gear{width:36px;height:36px;border-width:1px;font-size:16px;background:transparent}
+.page-hero h1 em{color:var(--gold);font-weight:400}
+.tabs{max-width:350px;padding:3px;background:transparent;border:1px solid var(--border);border-radius:8px;gap:3px;margin-bottom:24px}
+.tab{letter-spacing:0;text-transform:none;font-size:13px;padding:9px 15px;font-weight:500}
+.tab.active{background:#354336;color:var(--gold);border-color:transparent}
+#setup-view{display:grid;grid-template-columns:1.08fr 1fr;gap:18px 28px;align-items:start}
+#resume-banner{grid-column:1/-1}
+#setup-view>.card{grid-column:1;margin:0;padding:22px;border-radius:12px;background:#17201c}
+#setup-view>.pledge-card{grid-column:2;grid-row:1/span 4;position:sticky;top:24px;background:#202a20;border-color:#4b543c;padding:30px}
+#setup-view:has(#resume-banner[style*="block"])>.pledge-card{grid-row:2/span 4}
+.card-label{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.3px;text-transform:none;color:var(--text2);margin-bottom:16px;font-weight:500}
+.step-index{font-size:10px;color:var(--gold);border:1px solid var(--border2);width:25px;height:25px;border-radius:50%;display:grid;place-items:center}
+.block-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.block-opt{min-height:50px;padding:13px 14px;border-width:1px;background:var(--bg3)}
+.block-opt-name{font-size:13px;font-weight:500}
+.block-opt.sel{background:#344331;border-color:var(--gold)}
+.dur-row{grid-column:1/-1;margin:4px 0 0;padding:16px}
+.dur-fields input{font-size:18px;width:90px;border-width:1px}
+.dur-label{font-size:12px}
+.duration-presets{display:flex;gap:8px;margin-top:12px}.duration-presets button{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:7px 12px;border-radius:5px;cursor:pointer;font:12px var(--mono)}
+input[type=text],input[type=number],textarea,.feeling-input{border-width:1px;font-family:var(--mono);font-size:14px;background:#121c16;border-radius:7px;padding:12px}
+textarea{min-height:90px}.feeling-input{font-style:normal}
+.pledge-prompt{font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:12px}
+.pledge-heading{font:400 27px/1.25 Georgia;color:var(--text);margin-bottom:9px;letter-spacing:-.5px}
+.pledge-caption{font-size:12px;color:var(--text3);margin-bottom:24px}
+.pledge-text{background:none;border:0;padding:0;font-size:17px;line-height:1.95;color:#d9dfcd;margin-bottom:30px}
+.btn{letter-spacing:.3px;text-transform:none;font-size:14px;font-weight:600;border-width:1px;border-radius:7px;min-height:48px}
+.btn-primary{background:var(--gold);box-shadow:0 5px 20px #0002}.btn-secondary{background:var(--bg3);border-color:var(--border2);font-size:13px}
+#running-view,#complete-view,#tab-freeze{max-width:700px;margin:0 auto}
+.timer{font-size:100px;font-variant-numeric:tabular-nums;padding:48px 0;letter-spacing:-4px}
+.running-block{font-size:11px;letter-spacing:2px}.running-intent{font-size:20px}
+.settings{background:var(--bg2)}
+@media(max-width:900px){.hdr{flex-wrap:wrap;gap:18px}.suite-nav{order:3;width:100%}.header-actions{margin-left:auto}.page-hero h1{font-size:42px}}
+@media(max-width:680px){#app{padding:20px 18px 48px}.brand small{display:none}.header-actions{gap:10px}.history-link{font-size:11px}.page-hero h1{font-size:37px}.page-hero p{font-size:13px}.tabs{max-width:none}#setup-view{display:block}#setup-view>.card{margin-bottom:14px;padding:20px}#setup-view>.pledge-card{position:static;padding:25px}.pledge-text{font-size:16px}.local-tag{margin-top:18px}.timer{font-size:76px}.settings{padding:20px}}
+
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="hdr">
-    <div>
-      <div class="hdr-title">Session Protocol</div>
-      <div class="hdr-sub">Personal Command Layer</div>
-    </div>
-    <button class="gear" aria-label="Open settings" onclick="openSettings()">⚙</button>
-  </div>
-
-  <button class="btn btn-secondary btn-sm" style="margin-bottom:18px" onclick="openHistory()">Session history</button>
+  <header class="hdr">
+    <a class="brand" href="./"><span class="brand-mark">S</span><span>Session Protocol<small>A little structure. A clear beginning.</small></span></a>
+    <nav class="suite-nav" aria-label="Apps"><a href="../sessionprotocol/" aria-current="page">Session</a><a href="../goldenbullet/" >Challenge</a><a href="../riskcapitalsimulator/" >Simulator</a></nav>
+    <div class="header-actions"><button class="history-link" onclick="openHistory()">Session history</button><button class="gear" aria-label="Open settings" onclick="openSettings()">⚙</button></div>
+  </header>
+  <section class="page-hero">
+    <div><div class="eyebrow">Your space to begin</div><h1>One session.<br><em>One clear intention.</em></h1><p>Set the noise aside. Choose your work, name your intention, and give it your attention.</p></div>
+    <div class="local-tag">Private · saved on this device</div>
+  </section>
   <div class="tabs" role="tablist" aria-label="Protocol">
     <button role="tab" aria-selected="true" class="tab active" onclick="switchTab('activator')">Activator</button>
     <button role="tab" aria-selected="false" class="tab" onclick="switchTab('freeze')">Freeze Breaker</button>
@@ -224,12 +281,12 @@ textarea{resize:none;line-height:1.7;min-height:82px}
         </div>
       </div>
       <div class="card">
-        <div class="card-label">Select work block</div>
+        <div class="card-label"><span class="step-index">01</span> Choose your work</div>
         <div class="block-list" id="block-list"></div>
       </div>
 
       <div class="card">
-        <div class="card-label">How am I actually feeling right now?</div>
+        <label class="card-label" for="feeling-input"><span class="step-index">02</span> How are you arriving?</label>
         <input class="feeling-input" type="text" id="feeling-input" placeholder="One honest line. Don't filter it." oninput="checkFeeling()">
         <div class="feeling-signal" id="feeling-signal">
           <div class="feeling-signal-text" id="feeling-signal-text"></div>
@@ -238,12 +295,12 @@ textarea{resize:none;line-height:1.7;min-height:82px}
       </div>
 
       <div class="card">
-        <div class="card-label">In this session I will specifically…</div>
+        <label class="card-label" for="intent-input"><span class="step-index">03</span> Give this session one purpose</label>
         <textarea id="intent-input" placeholder="Name the one thing this session is for." rows="3"></textarea>
       </div>
 
-      <div class="card">
-        <div class="pledge-prompt">Read this aloud before beginning</div>
+      <div class="card pledge-card">
+        <div class="pledge-prompt">The commitment</div><h2 class="pledge-heading">Begin with principle.</h2><p class="pledge-caption">A moment to remember why. Read this aloud.</p>
         <div class="pledge-text" id="pledge-display"></div>
         <button class="btn btn-primary btn-full" onclick="startSession()">Begin Session</button>
       </div>
@@ -482,6 +539,9 @@ function renderBlocks(){
         '<div class="dur-fields"><input type="number" id="dur-input" min="1" max="480" placeholder="—" value="'+esc(durVal)+'"><label>min</label></div>';
     }
     el.appendChild(row);
+    var presets=document.createElement('div');presets.className='duration-presets';
+    presets.innerHTML=[25,50,90].map(function(m){return '<button type="button" onclick="setDuration('+m+')">'+m+' min</button>';}).join('');
+    row.appendChild(presets);
     var di=document.getElementById('dur-input');
     if(di) di.oninput=function(){ durVal=this.value; };
     var ci=document.getElementById('cname-input');
@@ -490,6 +550,7 @@ function renderBlocks(){
   document.getElementById('pledge-display').textContent=S.pledge;
 }
 
+function setDuration(minutes){durVal=String(minutes);var input=document.getElementById('dur-input');if(input)input.value=durVal;}
 function checkFeeling(){
   var val=document.getElementById('feeling-input').value.trim().toLowerCase();
   var sig=document.getElementById('feeling-signal');
@@ -582,7 +643,7 @@ function closeSession(){
   S.activeSession=null;
   persist();
   document.getElementById('complete-view').style.display='none';
-  document.getElementById('setup-view').style.display='block';
+  document.getElementById('setup-view').style.display='';
   document.getElementById('main-timer').textContent='00:00';
   document.getElementById('main-timer').className='timer';
   document.getElementById('intent-input').value='';

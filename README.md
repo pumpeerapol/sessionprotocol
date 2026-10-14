@@ -29,3 +29,9 @@ node --test tests/*.test.cjs
 ## Release checks
 
 Before merging, verify desktop and 390px mobile layouts, keyboard focus, reload recovery or result freshness, and any changed data import/export flow. CI runs on pull requests and pushes to main. Production publishing remains separate from PR validation.
+
+## Interface
+
+The interface uses a two-column desktop ritual, a single-column mobile flow, quick duration presets, a dedicated history action, and navigation to the other two apps.
+
+GitHub Pages already publishes the main branch automatically. The manual deployment workflow is retained as an explicit fallback; it no longer starts a second competing deployment on every push.
