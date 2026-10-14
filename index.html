@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Session Protocol</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -188,21 +188,84 @@ textarea{resize:none;line-height:1.7;min-height:82px}
   .freeze-done-msg{font-size:17px}
   .step-q{font-size:16px}
 }
+
+.btn-primary,.btn-primary:hover,.btn-primary:active{color:#12100a;text-shadow:none}
+:focus-visible{outline:3px solid var(--gold);outline-offset:4px}
+.block-opt{width:100%;text-align:left;font-family:inherit;color:inherit}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+
+.suite-nav{display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.suite-nav a{font:500 12px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;text-decoration:none;color:#a9b2af;padding:9px 13px;border-radius:7px;transition:background .2s}
+.suite-nav a:hover{background:#222b2a;color:#f0eee5}
+.suite-nav a[aria-current=page]{background:#29312d;color:#e8c986}
+.eyebrow{font:600 10px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:2.3px;text-transform:uppercase;color:#cbb985}
+.page-hero{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding:36px 0 30px}
+.page-hero h1{font:400 clamp(32px,4vw,52px)/1.1 Georgia,serif;color:#f4f1e8;letter-spacing:-1.5px;margin:10px 0 12px}
+.page-hero p{font:400 14px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#a5afaa;max-width:490px}
+.local-tag{font:500 11px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#a5afaa;white-space:nowrap;padding:8px 12px;border:1px solid #34413c;border-radius:30px}
+.local-tag:before{content:"";display:inline-block;width:5px;height:5px;background:#8fad9b;border-radius:50%;margin:0 7px 1px 0}
+@media(max-width:600px){.page-hero{display:block;padding:28px 0}.local-tag{display:inline-block;margin-top:16px}.suite-nav a{padding:8px 10px}}
+
+:root{--bg:#101816;--bg2:#18211e;--bg3:#1d2823;--bg4:#29372e;--gold:#e1c48a;--gold2:#edd6a6;--gold3:#bea06b;--text:#eeeede;--text2:#c5ccc3;--text3:#9ea99f;--border:#303d34;--border2:#465448;--mono:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+body{background:radial-gradient(ellipse at 80% 0%,#25312866,transparent 50%),var(--bg);font-size:15px}
+#app{max-width:1120px;padding:26px 36px 60px}
+.hdr{gap:24px;margin:0;padding:0 0 24px;border-color:var(--border)}
+.brand{display:flex;align-items:center;gap:12px;color:var(--text);text-decoration:none;font-size:15px;font-weight:600;white-space:nowrap}
+.brand-mark{display:grid;place-items:center;width:34px;height:38px;background:var(--gold);color:#172218;font:italic 28px Georgia;border-radius:9px 2px 9px 2px}
+.brand small{display:block;font-size:10px;font-weight:400;color:var(--text3);margin-top:3px}
+.header-actions{display:flex;align-items:center;gap:16px;margin-left:auto}
+.history-link{color:var(--text2);background:none;border:0;font:500 12px var(--mono);cursor:pointer;white-space:nowrap}
+.gear{width:36px;height:36px;border-width:1px;font-size:16px;background:transparent}
+.page-hero h1 em{color:var(--gold);font-weight:400}
+.tabs{max-width:350px;padding:3px;background:transparent;border:1px solid var(--border);border-radius:8px;gap:3px;margin-bottom:24px}
+.tab{letter-spacing:0;text-transform:none;font-size:13px;padding:9px 15px;font-weight:500}
+.tab.active{background:#354336;color:var(--gold);border-color:transparent}
+#setup-view{display:grid;grid-template-columns:1.08fr 1fr;gap:18px 28px;align-items:start}
+#resume-banner{grid-column:1/-1}
+#setup-view>.card{grid-column:1;margin:0;padding:22px;border-radius:12px;background:#17201c}
+#setup-view>.pledge-card{grid-column:2;grid-row:1/span 4;position:sticky;top:24px;background:#202a20;border-color:#4b543c;padding:30px}
+#setup-view:has(#resume-banner[style*="block"])>.pledge-card{grid-row:2/span 4}
+.card-label{display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.3px;text-transform:none;color:var(--text2);margin-bottom:16px;font-weight:500}
+.step-index{font-size:10px;color:var(--gold);border:1px solid var(--border2);width:25px;height:25px;border-radius:50%;display:grid;place-items:center}
+.block-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.block-opt{min-height:50px;padding:13px 14px;border-width:1px;background:var(--bg3)}
+.block-opt-name{font-size:13px;font-weight:500}
+.block-opt.sel{background:#344331;border-color:var(--gold)}
+.dur-row{grid-column:1/-1;margin:4px 0 0;padding:16px}
+.dur-fields input{font-size:18px;width:90px;border-width:1px}
+.dur-label{font-size:12px}
+.duration-presets{display:flex;gap:8px;margin-top:12px}.duration-presets button{background:transparent;border:1px solid var(--border2);color:var(--text2);padding:7px 12px;border-radius:5px;cursor:pointer;font:12px var(--mono)}
+input[type=text],input[type=number],textarea,.feeling-input{border-width:1px;font-family:var(--mono);font-size:14px;background:#121c16;border-radius:7px;padding:12px}
+textarea{min-height:90px}.feeling-input{font-style:normal}
+.pledge-prompt{font-size:10px;color:var(--gold);letter-spacing:2px;margin-bottom:12px}
+.pledge-heading{font:400 27px/1.25 Georgia;color:var(--text);margin-bottom:9px;letter-spacing:-.5px}
+.pledge-caption{font-size:12px;color:var(--text3);margin-bottom:24px}
+.pledge-text{background:none;border:0;padding:0;font-size:17px;line-height:1.95;color:#d9dfcd;margin-bottom:30px}
+.btn{letter-spacing:.3px;text-transform:none;font-size:14px;font-weight:600;border-width:1px;border-radius:7px;min-height:48px}
+.btn-primary{background:var(--gold);box-shadow:0 5px 20px #0002}.btn-secondary{background:var(--bg3);border-color:var(--border2);font-size:13px}
+#running-view,#complete-view,#tab-freeze{max-width:700px;margin:0 auto}
+.timer{font-size:100px;font-variant-numeric:tabular-nums;padding:48px 0;letter-spacing:-4px}
+.running-block{font-size:11px;letter-spacing:2px}.running-intent{font-size:20px}
+.settings{background:var(--bg2)}
+@media(max-width:900px){.hdr{flex-wrap:wrap;gap:18px}.suite-nav{order:3;width:100%}.header-actions{margin-left:auto}.page-hero h1{font-size:42px}}
+@media(max-width:680px){#app{padding:20px 18px 48px}.brand small{display:none}.header-actions{gap:10px}.history-link{font-size:11px}.page-hero h1{font-size:37px}.page-hero p{font-size:13px}.tabs{max-width:none}#setup-view{display:block}#setup-view>.card{margin-bottom:14px;padding:20px}#setup-view>.pledge-card{position:static;padding:25px}.pledge-text{font-size:16px}.local-tag{margin-top:18px}.timer{font-size:76px}.settings{padding:20px}}
+
 </style>
 </head>
 <body>
 <div id="app">
-  <div class="hdr">
-    <div>
-      <div class="hdr-title">Session Protocol</div>
-      <div class="hdr-sub">Personal Command Layer</div>
-    </div>
-    <button class="gear" onclick="openSettings()">⚙</button>
-  </div>
-
-  <div class="tabs">
-    <button class="tab active" onclick="switchTab('activator')">Activator</button>
-    <button class="tab" onclick="switchTab('freeze')">Freeze Breaker</button>
+  <header class="hdr">
+    <a class="brand" href="./"><span class="brand-mark">S</span><span>Session Protocol<small>A little structure. A clear beginning.</small></span></a>
+    <nav class="suite-nav" aria-label="Apps"><a href="../sessionprotocol/" aria-current="page">Session</a><a href="../goldenbullet/" >Challenge</a><a href="../riskcapitalsimulator/" >Simulator</a></nav>
+    <div class="header-actions"><button class="history-link" onclick="openHistory()">Session history</button><button class="gear" aria-label="Open settings" onclick="openSettings()">⚙</button></div>
+  </header>
+  <section class="page-hero">
+    <div><div class="eyebrow">Your space to begin</div><h1>One session.<br><em>One clear intention.</em></h1><p>Set the noise aside. Choose your work, name your intention, and give it your attention.</p></div>
+    <div class="local-tag">Private · saved on this device</div>
+  </section>
+  <div class="tabs" role="tablist" aria-label="Protocol">
+    <button role="tab" aria-selected="true" class="tab active" onclick="switchTab('activator')">Activator</button>
+    <button role="tab" aria-selected="false" class="tab" onclick="switchTab('freeze')">Freeze Breaker</button>
   </div>
 
   <!-- ACTIVATOR -->
@@ -218,12 +281,12 @@ textarea{resize:none;line-height:1.7;min-height:82px}
         </div>
       </div>
       <div class="card">
-        <div class="card-label">Select work block</div>
+        <div class="card-label"><span class="step-index">01</span> Choose your work</div>
         <div class="block-list" id="block-list"></div>
       </div>
 
       <div class="card">
-        <div class="card-label">How am I actually feeling right now?</div>
+        <label class="card-label" for="feeling-input"><span class="step-index">02</span> How are you arriving?</label>
         <input class="feeling-input" type="text" id="feeling-input" placeholder="One honest line. Don't filter it." oninput="checkFeeling()">
         <div class="feeling-signal" id="feeling-signal">
           <div class="feeling-signal-text" id="feeling-signal-text"></div>
@@ -232,12 +295,12 @@ textarea{resize:none;line-height:1.7;min-height:82px}
       </div>
 
       <div class="card">
-        <div class="card-label">In this session I will specifically…</div>
+        <label class="card-label" for="intent-input"><span class="step-index">03</span> Give this session one purpose</label>
         <textarea id="intent-input" placeholder="Name the one thing this session is for." rows="3"></textarea>
       </div>
 
-      <div class="card">
-        <div class="pledge-prompt">Read this aloud before beginning</div>
+      <div class="card pledge-card">
+        <div class="pledge-prompt">The commitment</div><h2 class="pledge-heading">Begin with principle.</h2><p class="pledge-caption">A moment to remember why. Read this aloud.</p>
         <div class="pledge-text" id="pledge-display"></div>
         <button class="btn btn-primary btn-full" onclick="startSession()">Begin Session</button>
       </div>
@@ -388,8 +451,9 @@ var S = (function(){
     var r = localStorage.getItem('sp_v6');
     if(r){
       var d = JSON.parse(r);
-      if(!d.sessionHistory) d.sessionHistory = [];
-      if(!d.freezeHistory) d.freezeHistory = [];
+      if(!d || !Array.isArray(d.blocks) || !d.blocks.every(function(b){return typeof b==='string';}) || typeof d.pledge!=='string') throw new Error('Invalid settings');
+      if(!Array.isArray(d.sessionHistory)) d.sessionHistory = [];
+      if(!Array.isArray(d.freezeHistory)) d.freezeHistory = [];
       if(!d.hasOwnProperty('activeSession')) d.activeSession = null;
       return d;
     }
@@ -406,6 +470,9 @@ var mainRem = 0;
 var mainPaused = false;
 var mainElapsed = 0;
 var mainDurSecs = 0;
+var mainDeadline = 0;
+var fDeadlines = [0,0,0];
+var settingsOpener = null;
 var currentSession = null;
 var histTab = 'sessions';
 var fIvals = [null,null,null];
@@ -429,6 +496,7 @@ function switchTab(name){
   var contents=document.querySelectorAll('.tab-content');
   for(var i=0;i<tabs.length;i++){
     tabs[i].classList.toggle('active', names[i]===name);
+    tabs[i].setAttribute('aria-selected',String(names[i]===name));
     contents[i].classList.toggle('active', names[i]===name);
   }
 }
@@ -438,14 +506,18 @@ function renderBlocks(){
   el.innerHTML='';
   for(var i=0;i<S.blocks.length;i++){
     (function(idx){
-      var d=document.createElement('div');
+      var d=document.createElement('button');
+      d.type='button';
+      d.setAttribute('aria-pressed',String(selIdx===idx&&!selCustom));
       d.className='block-opt'+(selIdx===idx&&!selCustom?' sel':'');
       d.innerHTML='<div class="block-opt-name">'+esc(S.blocks[idx])+'</div>';
       d.onclick=function(){ selIdx=idx; selCustom=false; durVal=''; renderBlocks(); };
       el.appendChild(d);
     })(i);
   }
-  var c=document.createElement('div');
+  var c=document.createElement('button');
+  c.type='button';
+  c.setAttribute('aria-pressed',String(selCustom));
   c.className='block-opt custom'+(selCustom?' sel':'');
   c.innerHTML='<div class="block-opt-name">Custom block</div>';
   c.onclick=function(){ selIdx=null; selCustom=true; durVal=''; renderBlocks(); };
@@ -467,6 +539,9 @@ function renderBlocks(){
         '<div class="dur-fields"><input type="number" id="dur-input" min="1" max="480" placeholder="—" value="'+esc(durVal)+'"><label>min</label></div>';
     }
     el.appendChild(row);
+    var presets=document.createElement('div');presets.className='duration-presets';
+    presets.innerHTML=[25,50,90].map(function(m){return '<button type="button" onclick="setDuration('+m+')">'+m+' min</button>';}).join('');
+    row.appendChild(presets);
     var di=document.getElementById('dur-input');
     if(di) di.oninput=function(){ durVal=this.value; };
     var ci=document.getElementById('cname-input');
@@ -475,6 +550,7 @@ function renderBlocks(){
   document.getElementById('pledge-display').textContent=S.pledge;
 }
 
+function setDuration(minutes){durVal=String(minutes);var input=document.getElementById('dur-input');if(input)input.value=durVal;}
 function checkFeeling(){
   var val=document.getElementById('feeling-input').value.trim().toLowerCase();
   var sig=document.getElementById('feeling-signal');
@@ -497,15 +573,16 @@ function checkFeeling(){
 function startSession(){
   if(selIdx===null&&!selCustom){ alert('Select a work block.'); return; }
   var dur=parseInt(durVal,10);
-  if(!dur||dur<1){ alert('Enter a duration in minutes.'); return; }
+  if(!Number.isInteger(Number(durVal))||dur<1||dur>480){ alert('Enter a whole duration from 1 to 480 minutes.'); return; }
   if(selCustom&&!customName.trim()){ alert('Name your custom block.'); return; }
   var intent=document.getElementById('intent-input').value.trim();
   if(!intent){ alert('Write your session intent first.'); return; }
   var bname=selCustom?customName.trim():S.blocks[selIdx];
   mainRem=dur*60; mainElapsed=0; mainDurSecs=dur*60; mainPaused=false;
+  mainDeadline=Date.now()+mainDurSecs*1000;
   currentSession={block:bname,durPlanned:dur,intent:intent,feeling:document.getElementById('feeling-input').value.trim(),ts:Date.now()};
   S.activeSession={block:bname,durPlanned:dur,elapsed:0,intent:intent,feeling:currentSession.feeling,ts:currentSession.ts};
-  persist();
+  saveActiveSession();
   document.getElementById('resume-banner').style.display='none';
   document.getElementById('setup-view').style.display='none';
   document.getElementById('running-view').style.display='block';
@@ -520,27 +597,35 @@ function startSession(){
 }
 
 function tickMain(){
-  var el=document.getElementById('main-timer');
-  if(!el){ clearInterval(mainIval); return; }
-  if(mainRem<=0){ clearInterval(mainIval); showComplete(); return; }
-  el.textContent=fmt(mainRem);
-  el.className='timer'+(mainRem<=60?' warn':'');
-  if(!mainPaused){ mainRem--; mainElapsed++; if(mainElapsed%15===0) saveActiveSession(); }
+  if(!currentSession || (S.activeSession&&S.activeSession.completed)) return;
+  if(!mainPaused) mainRem=Math.max(0,Math.ceil((mainDeadline-Date.now())/1000));
+  mainElapsed=mainDurSecs-mainRem;
+  var timer=document.getElementById('main-timer');
+  timer.textContent=fmt(mainRem);
+  timer.className='timer'+(mainRem<=60?' warn':'');
+  if(mainRem<=0){ showComplete(); return; }
+  if(mainElapsed%15===0) saveActiveSession();
 }
 
 function togglePause(){
+  if(!mainPaused) tickMain();
+  if(mainRem<=0) return;
   mainPaused=!mainPaused;
+  if(!mainPaused) mainDeadline=Date.now()+mainRem*1000;
   document.getElementById('pause-btn').textContent=mainPaused?'Resume':'Pause';
+  saveActiveSession();
 }
 
 function endSession(){
   if(!confirm('End this session early?')) return;
+  tickMain();
   clearInterval(mainIval);
   showComplete();
 }
 
 function showComplete(){
   clearInterval(mainIval);
+  if(S.activeSession){ S.activeSession.completed=true; saveActiveSession(); }
   document.getElementById('running-view').style.display='none';
   document.getElementById('complete-view').style.display='block';
   document.getElementById('done-line').textContent=DONE_LINE;
@@ -558,7 +643,7 @@ function closeSession(){
   S.activeSession=null;
   persist();
   document.getElementById('complete-view').style.display='none';
-  document.getElementById('setup-view').style.display='block';
+  document.getElementById('setup-view').style.display='';
   document.getElementById('main-timer').textContent='00:00';
   document.getElementById('main-timer').className='timer';
   document.getElementById('intent-input').value='';
@@ -571,12 +656,13 @@ function closeSession(){
 function startFT(step){
   var durEl=document.getElementById('fd-'+step);
   var mins=parseInt(durEl?durEl.value:(step<2?2:1),10);
-  if(!mins||mins<1) mins=1;
+  if(!Number.isInteger(Number(durEl.value))||mins<1||mins>60){alert('Enter 1 to 60 whole minutes.');return;}
   if(fIvals[step]) clearInterval(fIvals[step]);
   fRem[step]=mins*60;
+  fDeadlines[step]=Date.now()+mins*60000;
   document.getElementById('ft-'+step).textContent=fmt(fRem[step]);
   fIvals[step]=setInterval(function(){
-    if(fRem[step]>0) fRem[step]--;
+    fRem[step]=Math.max(0,Math.ceil((fDeadlines[step]-Date.now())/1000));
     var el=document.getElementById('ft-'+step);
     if(el) el.textContent=fmt(fRem[step]);
     if(fRem[step]<=0) clearInterval(fIvals[step]);
@@ -624,9 +710,11 @@ function completeFreezeCircuit(){
 function freezeToActivator(){
   resetFreeze();
   switchTab('activator');
-  document.getElementById('setup-view').style.display='block';
-  document.getElementById('running-view').style.display='none';
-  document.getElementById('complete-view').style.display='none';
+  if(currentSession){
+    document.getElementById('setup-view').style.display='none';
+    document.getElementById('running-view').style.display=S.activeSession&&S.activeSession.completed?'none':'block';
+    document.getElementById('complete-view').style.display=S.activeSession&&S.activeSession.completed?'block':'none';
+  }
 }
 
 function resetFreeze(){
@@ -647,14 +735,22 @@ function resetFreeze(){
   document.getElementById('dot-0').className='dot active';
 }
 
+function openHistory(){ openSettings(); document.getElementById('s-history').scrollIntoView({block:'center'}); }
 function openSettings(){
+  settingsOpener=document.activeElement;
   document.getElementById('s-pledge').value=S.pledge;
   renderSBlocks();
   renderHistory();
-  document.getElementById('settings-overlay').classList.add('open');
+  var overlay=document.getElementById('settings-overlay');
+  overlay.classList.add('open');
+  overlay.setAttribute('role','dialog');
+  overlay.setAttribute('aria-modal','true');
+  overlay.setAttribute('aria-label','Settings and history');
+  overlay.querySelector('button, input, textarea').focus();
 }
 function closeSettings(){
   document.getElementById('settings-overlay').classList.remove('open');
+  if(settingsOpener) settingsOpener.focus();
 }
 function renderSBlocks(){
   var el=document.getElementById('s-blocks');
@@ -672,6 +768,7 @@ function renderSBlocks(){
 function delBlock(i){
   S.blocks.splice(i,1);
   if(selIdx===i) selIdx=null;
+  else if(selIdx!==null&&selIdx>i) selIdx--;
   renderSBlocks();
 }
 function addBlock(){
@@ -694,38 +791,55 @@ function saveSettings(){
 }
 
 function saveActiveSession(){
-  if(S.activeSession){ S.activeSession.elapsed=mainElapsed; persist(); }
+  if(S.activeSession){
+    Object.assign(S.activeSession,{elapsed:mainElapsed,remaining:mainRem,paused:mainPaused,deadline:mainDeadline});
+    persist();
+  }
 }
-function clearActiveSession(){
-  S.activeSession=null; persist();
-}
+function clearActiveSession(){ S.activeSession=null; persist(); }
 function checkResume(){
   var a=S.activeSession;
   if(!a) return;
-  var rem=a.durPlanned*60-a.elapsed;
-  if(rem<=0){ clearActiveSession(); return; }
-  currentSession={block:a.block,durPlanned:a.durPlanned,intent:a.intent,feeling:a.feeling||'',ts:a.ts};
-  var d=document.getElementById('resume-detail');
-  d.textContent=a.block+' — '+fmt(rem)+' remaining\n'+a.intent;
+  if(typeof a.block!=='string'||!Number.isFinite(a.durPlanned)||a.durPlanned<1||a.durPlanned>480||!Number.isFinite(a.elapsed)){
+    clearActiveSession(); return;
+  }
+  var rem=a.deadline&&!a.paused&&!a.completed?Math.max(0,Math.ceil((a.deadline-Date.now())/1000)):Math.max(0,a.durPlanned*60-a.elapsed);
+  document.getElementById('resume-detail').textContent=a.block+' — '+(a.completed||rem<=0?'ready to close':fmt(rem)+' remaining')+' — '+a.intent;
   document.getElementById('resume-banner').style.display='block';
 }
 function resumeSession(){
   var a=S.activeSession;
   if(!a) return;
-  var rem=a.durPlanned*60-a.elapsed;
-  if(rem<=0){ dismissResume(); return; }
-  mainRem=rem; mainElapsed=a.elapsed; mainDurSecs=a.durPlanned*60; mainPaused=false;
+  currentSession={block:a.block,durPlanned:a.durPlanned,intent:a.intent,feeling:a.feeling||'',ts:a.ts};
+  mainDurSecs=a.durPlanned*60;
+  mainRem=a.deadline&&!a.paused&&!a.completed?Math.max(0,Math.ceil((a.deadline-Date.now())/1000)):Math.max(0,mainDurSecs-a.elapsed);
+  mainElapsed=mainDurSecs-mainRem;
+  mainPaused=!!a.paused;
+  mainDeadline=a.deadline||Date.now()+mainRem*1000;
   document.getElementById('resume-banner').style.display='none';
   document.getElementById('setup-view').style.display='none';
   document.getElementById('running-view').style.display='block';
   document.getElementById('running-name').textContent=a.block.toUpperCase();
   document.getElementById('running-intent').textContent=a.intent;
-  document.getElementById('pause-btn').textContent='Pause';
-  document.getElementById('main-timer').className='timer';
+  document.getElementById('pause-btn').textContent=mainPaused?'Resume':'Pause';
   clearInterval(mainIval);
+  if(a.completed||mainRem<=0){showComplete();return;}
   tickMain();
   mainIval=setInterval(tickMain,1000);
 }
+window.addEventListener('pagehide',function(){if(currentSession){tickMain();saveActiveSession();}});
+document.addEventListener('visibilitychange',function(){if(currentSession){tickMain();saveActiveSession();}else checkResume();});
+document.addEventListener('keydown',function(e){
+  var overlay=document.getElementById('settings-overlay');
+  if(!overlay.classList.contains('open')) return;
+  if(e.key==='Escape'){closeSettings();return;}
+  if(e.key==='Tab'){
+    var items=Array.from(overlay.querySelectorAll('button,input,textarea')).filter(function(x){return !x.disabled&&x.offsetParent!==null;});
+    var first=items[0],last=items[items.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  }
+});
 function dismissResume(){
   currentSession=null;
   clearActiveSession();
